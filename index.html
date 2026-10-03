@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지속가능한 인천 만들기 - 인천산곡초등학교</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: linear-gradient(180deg, #fff9f0 0%, #ffe8d6 100%);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .game-header {
+            background: linear-gradient(90deg, #2c5aa0 0%, #1a7f7e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .game-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .game-content {
+            padding: 40px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .scene {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .scene.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .mission-tracker {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2c5aa0;
+        }
+
+        .mission-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .mission-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .mission-icon.completed {
+            background: #4caf50;
+            color: white;
+        }
+
+        .mission-icon.pending {
+            background: #ffc107;
+            color: white;
+        }
+
+        .mission-icon.future {
+            background: #ccc;
+            color: #666;
+        }
+
+        .scene-title {
+            font-size: 28px;
+            color: #2c5aa0;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .scene-text {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+
+        .character-name {
+            font-size: 18px;
+            color: #1a7f7e;
+            font-weight: bold;
+            margin-bottom: 10px;
+            margin-top: 15px;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .choice-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .choice-btn.alt1 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+        }
+
+        .choice-btn.alt1:hover {
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
+        }
+
+        .choice-btn.alt2 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .choice-btn.alt2:hover {
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .choice-btn.alt3 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            box-shadow: 0 5px 15px rgba(67, 233, 123, 0.3);
+        }
+
+        .choice-btn.alt3:hover {
+            box-shadow: 0 10px 25px rgba(67, 233, 123, 0.4);
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #2c5aa0 0%, #1a7f7e 100%);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-left: 5px solid #2c5aa0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            font-size: 17px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .conflict-box {
+            background: linear-gradient(135deg, #ffe8d6 0%, #ffd9b8 100%);
+            border-left: 5px solid #f5576c;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            font-size: 17px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .solution-box {
+            background: linear-gradient(135deg, #d4f7dd 0%, #c8f0d8 100%);
+            border-left: 5px solid #43e97b;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            font-size: 17px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .stakeholder {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .knowledge-badge {
+            display: inline-block;
+            background: #2c5aa0;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .ending-message {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2dfdb 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .ending-title {
+            font-size: 26px;
+            color: #1a7f7e;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .ending-text {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .decision-box {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .restart-btn {
+            background: linear-gradient(90deg, #2c5aa0 0%, #1a7f7e 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 15px 40px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(44, 90, 160, 0.4);
+        }
+
+        .emoji {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+                <div class="game-header">
+            <div>
+                <div class="game-title">🌍 지속가능한 인천 만들기</div>
+                <div style="font-size: 14px; color: rgba(255,255,255,0.9);">인천산곡초등학교</div>
+            </div>
+            <div class="game-subtitle">4가지 미션을 통해 도시의 미래를 설계하다</div>
+        </div>
+
+        <div class="game-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+
+            <!-- Scene 1: 프롤로그 -->
+            <div class="scene active" id="scene-1">
+                <div class="scene-title">🏢 프롤로그: 인천 미래 설계팀 출범</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍🏫 선생님</div>
+                    "여러분, 환영합니다! 오늘부터 여러분은 '인천 미래 설계팀'이 되어서 우리 도시가 안고 있는 4가지 중요한 과제를 함께 풀어야 해요."
+                    <br><br>
+                    "인천은 빠르게 발전하고 있지만, 그 과정에서 놓치고 있는 것들이 많아요. 우리는 오늘 하루동안 4개의 현장을 방문해서, 각 문제를 이해하고, 어떻게 해결할 수 있을지 함께 생각해봐야 합니다."
+                    <br><br>
+                    "여러분의 선택 하나하나가 인천의 미래를 결정하게 될 거예요. 준비되셨나요?"
+                </div>
+
+                <div class="mission-tracker">
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #2c5aa0;">📋 오늘의 미션</div>
+                    <div class="mission-item">
+                        <div class="mission-icon pending">1</div>
+                        <span>⛴️ 인천항 탐험 - 갯벌 복원</span>
+                    </div>
+                    <div class="mission-item">
+                        <div class="mission-icon future">2</div>
+                        <span>🏯 강화도 탐험 - 문화유산 보존</span>
+                    </div>
+                    <div class="mission-item">
+                        <div class="mission-icon future">3</div>
+                        <span>🌆 송도 탐험 - 친환경 개발</span>
+                    </div>
+                    <div class="mission-item">
+                        <div class="mission-icon future">4</div>
+                        <span>🦆 송도 람사르갯벌 - 갯벌 복원</span>
+                    </div>
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToScene(2)">
+                        <span class="emoji">🚌</span> 버스에 올라탑시다! 첫 번째 미션 출발!
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== 미션 1: 인천항 ===== -->
+            <div class="scene" id="scene-2">
+                <div class="scene-title">⛴️ 미션 1: 인천항 탐험 - 갯벌의 울음소리</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍🏫 선생님</div>
+                    "자, 인천항에 도착했어요. 거대한 컨테이너선과 현대적인 항만 시설이 보이네요."
+                    <br><br>
+                    "하지만 여러분은 알고 계신가요? 100년 전 이 자리에는 드넓은 갯벌이 있었어요. 그 갯벌은 '바다의 자궁'이라고 불릴 만큼 소중한 생태계였어요."
+                    <br><br>
+                    항만 해설사가 우리를 맞이합니다.
+                    <br><br>
+                    <div class="character-name">👨‍💼 항만 해설사</div>
+                    "인천항은 1883년 개항 이후 계속 확장되어 왔어요. 항만을 키울 때마다 갯벌을 메워야 했죠. 지금은 갯벌이 거의 사라졌어요."
+                </div>
+
+                <div class="conflict-box">
+                    ⚔️ <strong>미션 1의 갈등:</strong>
+                    <br>• 항만의 경제적 역할: 국제 무역의 허브
+                    <br>• 생태계 파괴: 새들의 서식지 상실, 물고기 감소
+                    <br>• 어민 피해: 어획량 감소로 생계 위협
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToScene(3)">
+                        <span class="emoji">🔍</span> 갯벌 생태계에 대해 깊이 있게 알아보기
+                    </button>
+                    <button class="choice-btn alt1" onclick="goToScene(4)">
+                        <span class="emoji">💚</span> 이미 진행 중인 복원 프로젝트 견학하기
+                    </button>
+                </div>
+            </div>
+
+            <div class="scene" id="scene-3">
+                <div class="scene-title">🦀 갯벌의 놀라운 역할</div>
+                <div class="scene-text">
+                    <div class="character-name">👩‍🔬 생태 전문가</div>
+                    "갯벌이 얼마나 중요한지 알아요? 시베리아에서 남쪽으로 날아가는 철새들이 여기서 에너지를 충전해요. 이곳이 없으면 저 새들은 죽을 수도 있어요."
+                    <br><br>
+                    "또 갯벌의 미생물들은 바다의 물을 정화해요. 그리고 어린 생선들이 자라는 보육원이기도 하죠. 1헥타르의 갯벌은 1년에 얼마나 많은 생선을 키우는지 알아요?"
+                    <br><br>
+                    "약 100톤이에요! 갯벌 없이는 우리의 생선 자원이 빠르게 사라져요."
+                    <br><br>
+                    <span class="knowledge-badge">📚 학습: 갯벌은 단순히 습지가 아니라, 모든 바다 생명의 기반</span>
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToScene(4)">
+                        <span class="emoji">➡️</span> 복원 프로젝트로 이동
+                    </button>
+                </div>
+            </div>
+
+            <div class="scene" id="scene-4">
+                <div class="scene-title">♻️ 인천항 에코센터 프로젝트</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍💼 항만 해설사</div>
+                    "이곳이 우리의 희망이에요. '인천항 에코센터'라고 불리는 이곳은 포장도로를 걷어내고 인공갯벌을 만들었어요."
+                    <br><br>
+                    실제로 작은 게들과 새들이 활동하는 모습이 보입니다.
+                    <br><br>
+                    "하지만 이게 완벽한 해결책은 아니에요. 지금 우리 앞의 선택은..."
+                    <br><br>
+                    <strong>🤔 어떻게 인천항의 경제 기능을 유지하면서 갯벌도 더 많이 복원할까?</strong>
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="recordDecision('항만1', '추가 갯벌 복원 투자'); goToScene(5)">
+                        <span class="emoji">🌿</span> "항만의 일부를 포기하고 더 많은 갯벌을 복원해야 해요"
+                    </button>
+                    <button class="choice-btn alt1" onclick="recordDecision('항만1', '기술로 해결'); goToScene(5)">
+                        <span class="emoji">🤖</span> "AI로 항만을 더 효율적으로 관리해서 같은 면적에서 더 많은 기능을 하게 해야 해요"
+                    </button>
+                    <button class="choice-btn alt2" onclick="recordDecision('항만1', '단계적 복원'); goToScene(5)">
+                        <span class="emoji">⚖️</span> "경제와 환경을 균형있게 - 10년에 걸쳐 천천히 복원해요"
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== 미션 2: 강화도 ===== -->
+            <div class="scene" id="scene-5">
+                <div class="scene-title">🏯 미션 2: 강화도 탐험 - 역사와 개발의 갈등</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍🏫 선생님</div>
+                    "이제 강화도에 도착했어요. 웅장한 산과 옛 성곽 유적이 보여요."
+                    <br><br>
+                    <div class="character-name">🧑‍🎓 나</div>
+                    "와! 정말 멋진데요? 하지만 주변에 건설 중인 건물들도 보이네요?"
+                    <br><br>
+                    <div class="character-name">👩‍🏫 강화 문화 해설사</div>
+                    "맞아요. 강화도는 한국 역사에서 가장 중요한 장소 중 하나예요. 고려의 수도였고, 팔만대장경을 인쇄했던 곳이죠. 하지만 지금 강화도는 서울 근처라는 이점으로 많은 건설 요청을 받고 있어요."
+                </div>
+
+                <div class="conflict-box">
+                    ⚔️ <strong>미션 2의 갈등:</strong>
+                    <br>• 문화유산 보존: 세계문화유산 미래 훼손 가능성
+                    <br>• 지역 경제: 관광업 활성화, 주민 일자리 창출
+                    <br>• 주민 생활: 집값 상승(좋음?) vs 환경 오염(나쁨)
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToScene(6)">
+                        <span class="emoji">📖</span> 강화도의 역사 문화유산 자세히 알아보기
+                    </button>
+                    <button class="choice-btn alt1" onclick="goToScene(7)">
+                        <span class="emoji">👥</span> 지역주민, 개발업자, 문화인의 의견 듣기
+                    </button>
+                </div>
+            </div>
+
+            <div class="scene" id="scene-6">
+                <div class="scene-title">🏰 강화도의 세계문화유산</div>
+                <div class="scene-text">
+                    <div class="character-name">👩‍🏫 강화 문화 해설사</div>
+                    "강화도는 1236년부터 1270년까지 고려의 수도였어요. 이 기간 동안 여러 침략자들로부터 나라를 지켜내려고 노력했죠. 또 세계 최초의 금속활자본 팔만대장경을 인쇄한 곳이에요."
+                    <br><br>
+                    "이런 유산들이 사라지면 영원히 돌아오지 않아요. 돈으로는 절대 살 수 없는 거예요."
+                    <br><br>
+                    옛 사찰, 성곽, 박물관을 둘러봅니다.
+                    <br><br>
+                    <span class="knowledge-badge">📚 학습: 문화유산은 선조의 정신과 지혜를 담은 국보</span>
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToScene(7)">
+                        <span class="emoji">➡️</span> 주민들의 의견 들어보기
+                    </button>
+                </div>
+            </div>
+
+            <div class="scene" id="scene-7">
+                <div class="scene-title">💬 강화도의 다양한 목소리</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍🌾 도자기 장인 (70세)</div>
+                    "이 마을에서 400년 도자기를 만들어 왔어요. 리조트가 들어오면 우리 전통이 사라져요."
+                    <br><br>
+                    <div class="character-name">👨‍💼 건설업체 관계자</div>
+                    "젊은 사람들이 일자리가 없어서 도시로 떠나고 있어요. 관광이 활성화되면 펜션, 음식점, 가이드 일자리가 생기죠. 문화도 경제 없이는 지킬 수 없지 않을까요?"
+                    <br><br>
+                    <div class="character-name">👩 주민 (중년여성)</div>
+                    "집값이 올라가는 건 좋지만... 조용한 우리 마을이 사라지는 게 싫어요. 어떻게 둘 다 할 수 없을까요?"
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="recordDecision('강화1', '문화 최우선'); goToScene(8)">
+                        <span class="emoji">🏛️</span> "문화유산 보존을 최우선으로! 개발은 제한해야 해요"
+                    </button>
+                    <button class="choice-btn alt1" onclick="recordDecision('강화1', '지속가능 관광'); goToScene(8)">
+                        <span class="emoji">🎌</span> "문화와 조화된 관광 - 전통 문화체험 프로그램으로 경제 활성화"
+                    </button>
+                    <button class="choice-btn alt2" onclick="recordDecision('강화1', '시민참여'); goToScene(8)">
+                        <span class="emoji">👥</span> "주민들이 직접 결정하는 과정을 만들어야 해요"
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== 미션 3: 송도 ===== -->
+            <div class="scene" id="scene-8">
+                <div class="scene-title">🌆 미션 3: 송도 탐험 - 친환경 개발의 현실</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍🏫 선생님</div>
+                    "이제 송도 신도시에 왔어요. 높은 건물들, 깨끗한 거리, 곳곳의 녹지... 정말 미래 도시처럼 보이네요!"
+                    <br><br>
+                    <div class="character-name">👨‍💼 도시계획가</div>
+                    "맞아요! 송도는 '친환경 신도시'로 설계됐어요. 우리는 경제 발전과 환경 보존을 함께 생각했어요."
+                    <br><br>
+                    "하지만 여러분이 알아야 할 것이 있어요. 송도도 처음에는 갯벌이었어요. 그리고 아직도 완벽하지 않아요."
+                </div>
+
+                <div class="info-box">
+                    🌱 <strong>송도의 친환경 특징:</strong>
+                    <br>• 신재생 에너지 활용 (태양광, 지열)
+                    <br>• AI 스마트 빌딩 (에너지 30% 절약)
+                    <br>• 광범위한 공원과 수로
+                    <br>• 자동차 제한, 대중교통 우선
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToScene(9)">
+                        <span class="emoji">🤖</span> 송도의 스마트 기술 상세히 배우기
+                    </button>
+                    <button class="choice-btn alt1" onclick="goToScene(10)">
+                        <span class="emoji">🤔</span> 친환경 개발의 한계와 문제점 직시하기
+                    </button>
+                </div>
+            </div>
+
+            <div class="scene" id="scene-9">
+                <div class="scene-title">🤖 스마트 시시의 첨단 기술</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍💼 도시계획가</div>
+                    "송도의 건물들은 AI로 관리돼요. 센서가 온도, 습도, 사람 수를 감지해서 자동으로 조절하죠. 에너지를 30% 절약할 수 있어요."
+                    <br><br>
+                    "또 스마트 신호등은 교통 흐름을 자동으로 조절하고, 자동 쓰레기 처리 시스템, 드론 배달... 이 모든 게 환경을 지키면서 효율성을 높이는 거예요."
+                    <br><br>
+                    <strong>문제: 기술만으로 모든 환경 문제를 해결할 수 있을까요?</strong>
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToScene(10)">
+                        <span class="emoji">➡️</span> 그 한계를 살펴봐요
+                    </button>
+                </div>
+            </div>
+
+            <div class="scene" id="scene-10">
+                <div class="scene-title">⚠️ 친환경 개발의 현실적 한계</div>
+                <div class="scene-text">
+                    <div class="character-name">👩‍🔬 환경 비평가</div>
+                    "송도는 정말 노력하고 있어요. 하지만 인정해야 할 것들이 있어요:"
+                    <br><br>
+                </div>
+
+                <div class="conflict-box">
+                    ❌ <strong>친환경 개발의 한계:</strong>
+                    <br>• 초기 건설: 갯벌을 일부 파괴했어야 했음
+                    <br>• 높은 집값: 저소득층은 살 수 없는 도시
+                    <br>• 기술 의존: 기술이 완벽하지 않으면 환경 오염 심화
+                    <br>• 에너지 생산: 전기도 어디서 와야 하나?
+                </div>
+
+                <div class="scene-text">
+                    <div class="character-name">👨‍💼 도시계획가</div>
+                    "중요한 건 계속 노력하는 거예요. 송도도 완벽하지 않지만, 매년 더 나아지려고 합니다. 여러분도 그렇게 해야 해요."
+                    <br><br>
+                    <span class="knowledge-badge">📚 학습: 완벽한 해결책은 없다. 계속된 개선이 답</span>
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="recordDecision('송도1', '기술 혁신 중심'); goToScene(11)">
+                        <span class="emoji">🚀</span> "기술 혁신을 계속 추진해야 해요"
+                    </button>
+                    <button class="choice-btn alt1" onclick="recordDecision('송도1', '개발 속도 조절'); goToScene(11)">
+                        <span class="emoji">🛑</span> "더 신중하게, 더 느리게 개발해야 해요"
+                    </button>
+                    <button class="choice-btn alt2" onclick="recordDecision('송도1', '포용적 발전'); goToScene(11)">
+                        <span class="emoji">❤️</span> "저소득층도 살 수 있는 친환경 도시를 만들어야 해요"
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== 미션 4: 송도 람사르갯벌 ===== -->
+            <div class="scene" id="scene-11">
+                <div class="scene-title">🦆 미션 4: 송도 람사르갯벌 탐험 - 과거의 실수를 바로잡다</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍🏫 선생님</div>
+                    "마지막 미션이에요. 송도 람사르갯벌입니다. 우리가 오늘 아침에 본 송도 신도시 뒤편에 있는 이곳을 봐요."
+                    <br><br>
+                    <div class="character-name">👩‍🔬 생태 과학자</div>
+                    "이곳은 우리의 실수를 바로잡는 현장이에요. 30년 전만 해도 이곳은 드넓은 갯벌이었어요. 송도 신도시를 개발하면서 많은 갯벌을 매립했는데, 생태계가 거의 파괴됐어요."
+                    <br><br>
+                    "하지만 2010년대부터 우리는 이 갯벌의 일부를 다시 복원하려고 노력하고 있어요. 우리의 과거 실수를 인정하고 회복하려는 거죠."
+                </div>
+
+                <div class="info-box">
+                    📖 <strong>송도 람사르갯벌의 변화:</strong>
+                    <br>• 1990년대: 송도 신도시 개발 (갯벌 매립)
+                    <br>• 2000년대: 개발 완료, 생태 위기 인식
+                    <br>• 2010년대: 갯벌 복원 프로젝트 시작
+                    <br>• 현재: 철새 서식지 복원, 식생 회복 진행 중
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToScene(12)">
+                        <span class="emoji">🌿</span> 갯벌 복원 방법과 과정 알아보기
+                    </button>
+                    <button class="choice-btn alt1" onclick="goToScene(13)">
+                        <span class="emoji">👥</span> 시민 참여 갯벌 복원 활동에 직접 참여하기
+                    </button>
+                </div>
+            </div>
+
+            <div class="scene" id="scene-12">
+                <div class="scene-title">🌱 송도 람사르갯벌 복원 프로젝트의 진행</div>
+                <div class="scene-text">
+                    <div class="character-name">👩‍🔬 생태 과학자</div>
+                    "매립된 갯벌을 되돌리는 건 정말 어려워요. 하지만 우리는 노력하고 있어요. 먼저 포장도로를 걷어내서 흙을 노출시켜요."
+                    <br><br>
+                    "그러면 자연적으로 염생식물이 자라고, 바닷물이 드나들 수 있는 수로를 만들어서 갯벌의 환경을 다시 만들어요. 버드나무, 칠면초 같은 식물들을 심기도 해요."
+                    <br><br>
+                    "가장 중요한 건 인내심이에요. 생태계 회복에는 10년, 20년이 걸릴 수 있어요. 하지만 우리는 계속할 거예요. 이것이 우리의 책임이기도 하고요."
+                    <br><br>
+                    <span class="knowledge-badge">📚 학습: 과거 실수를 인정하고 회복하려는 노력이 진정한 용기</span>
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToScene(13)">
+                        <span class="emoji">➡️</span> 직접 갯벌 복원 활동에 참여해봐요
+                    </button>
+                </div>
+            </div>
+
+            <div class="scene" id="scene-13">
+                <div class="scene-title">👥 송도 람사르갯벌 시민 참여 복원 활동</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍🏫 선생님</div>
+                    "여러분, 신발을 벗고 갯벌에 들어가 봅시다. 우리도 이 복원 활동에 참여할 거예요."
+                    <br><br>
+                    우리는 신발을 벗고 흙 속에 들어갑니다. 발가락 사이로 찬 흙이 느껴집니다.
+                    <br><br>
+                    <div class="character-name">👩‍🔬 생태 과학자</div>
+                    "자, 이 칠면초 모종을 심어요. 한 사람이 100개씩 심으면, 모두가 함께하면 정말 큰 갯벌이 돼요. 여러분이 심은 이 식물이 10년 뒤 어떻게 자라 있을지 상상해봐요."
+                    <br><br>
+                    <div class="character-name">🧑‍🎓 나</div>
+                    "와! 제가 심은 이 칠면초가 자라서 새들의 보금자리가 될 거네요! 송도가 만든 실수를 우리가 함께 고쳐가고 있다는 게 신기해요!"
+                </div>
+
+                <div class="solution-box">
+                    ✨ <strong>시민 참여의 힘:</strong>
+                    <br>• 한 사람의 작은 손이 모여 큰 변화를 만든다
+                    <br>• 학생들도 미래의 환경 지킴이가 될 수 있다
+                    <br>• 과거 실수를 인정하고 복원하는 용기
+                    <br>• 정부 + 기업 + 시민의 협력이 답
+                    <br>• 같은 인천 안에서 개발과 복원이 함께 일어난다
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="recordDecision('송도갯벌1', '계속 참여'); goToScene(14)">
+                        <span class="emoji">💪</span> "앞으로도 계속 복원 활동에 참여하겠어요!"
+                    </button>
+                    <button class="choice-btn alt1" onclick="recordDecision('송도갯벌1', '더 큰 변화'); goToScene(14)">
+                        <span class="emoji">🔥</span> "이 경험을 많은 사람에게 알리고 싶어요!"
+                    </button>
+                    <button class="choice-btn alt2" onclick="recordDecision('송도갯벌1', '정책 제안'); goToScene(14)">
+                        <span class="emoji">📋</span> "정부와 학교에 갯벌 보존 정책을 제안하고 싶어요"
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== 최종 미션: 통합 의사결정 ===== -->
+            <div class="scene" id="scene-14">
+                <div class="scene-title">🎯 최종 미션: 지속가능한 인천을 설계하다</div>
+                <div class="scene-text">
+                    <div class="character-name">👨‍🏫 선생님</div>
+                    "여러분, 하루종일 인천의 4가지 현장을 탐방했어요. 각 장소에서 다양한 관점들을 만났어요. 이제 여러분의 경험을 바탕으로 '지속가능한 인천'을 함께 설계해봅시다."
+                    <br><br>
+                    "세 가지 시나리오 중에서 여러분이 생각하는 가장 좋은 길을 선택해주세요. 이건 정답이 없는 질문이에요. 여러분의 가치관과 꿈이 담긴 선택을 해주세요."
+                </div>
+
+                <div class="info-box">
+                    💡 <strong>선택의 기준:</strong>
+                    <br>• 인천항: 갯벌 복원 vs 항만 기능 vs 균형
+                    <br>• 강화도: 문화 보존 vs 경제 개발 vs 시민 참여
+                    <br>• 송도: 기술 혁신 vs 개발 속도 조절 vs 포용성
+                    <br>• 시화호: 계속된 노력과 시민 참여
+                </div>
+
+                <div class="choices">
+                    <button class="choice-btn" onclick="goToEnding(1)">
+                        <span class="emoji">🌱</span> 환경과 문화를 지키는 지속가능한 인천
+                    </button>
+                    <button class="choice-btn alt1" onclick="goToEnding(2)">
+                        <span class="emoji">⚖️</span> 균형잡힌 발전의 지속가능한 인천
+                    </button>
+                    <button class="choice-btn alt2" onclick="goToEnding(3)">
+                        <span class="emoji">👥</span> 시민이 주인인 지속가능한 인천
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== 엔딩들 ===== -->
+            <div class="scene" id="ending-1">
+                <div class="ending-message">
+                    <div class="ending-title">🌍 2040년 지속가능한 인천: 환경과 문화를 지킨 도시</div>
+                    <div class="ending-text">
+                        여러분의 선택으로 인천은 새로운 길을 걷게 됐어요.
+                    </div>
+                    <div class="decision-box">
+                        <strong>⛴️ 인천항:</strong> 항만의 규모를 줄이고 넓은 갯벌을 복원. 국제 무역은 줄었지만, 생태계가 되살아났어요. 철새들이 돌아왔고, 어민들의 생계도 회복되었어요.
+                        <br><br>
+                        <strong>🏯 강화도:</strong> 개발을 제한했어요. 전통 문화가 살아있고, 문화 관광으로 번영하고 있어요.
+                        <br><br>
+                        <strong>🌆 송도:</strong> 개발 속도를 늦추고 더 신중하게 진행했어요.
+                        <br><br>
+                        <strong>🦆 시화호:</strong> 습지 복원이 계속되고, 많은 시민이 참여했어요.
+                    </div>
+                    <div class="ending-text">
+                        <strong>이 선택의 의미:</strong> 빠른 경제 성장보다 오래 지속될 수 있는 미래를 선택했어요. 우리 아이들도 이 아름다운 인천을 누릴 수 있어요.
+                    </div>
+                    <button class="restart-btn" onclick="goToScene(1)">🏠 처음으로</button>
+                </div>
+            </div>
+
+            <div class="scene" id="ending-2">
+                <div class="ending-message">
+                    <div class="ending-title">⚖️ 2040년 지속가능한 인천: 균형을 맞춘 도시</div>
+                    <div class="ending-text">
+                        여러분의 선택으로 인천은 현실적인 길을 택했어요.
+                    </div>
+                    <div class="decision-box">
+                        <strong>⛴️ 인천항:</strong> 항만 기능을 유지하면서도 점진적으로 갯벌을 복원. 에코센터를 확대했어요.
+                        <br><br>
+                        <strong>🏯 강화도:</strong> 문화유산을 지키면서 지속가능한 관광 프로그램을 개발했어요.
+                        <br><br>
+                        <strong>🌆 송도:</strong> 스마트 기술을 계속 발전시키되, 더 많은 사람이 살 수 있도록 노력했어요.
+                        <br><br>
+                        <strong>🦆 시화호:</strong> 정부, 기업, 시민이 협력해서 습지를 복원했어요.
+                    </div>
+                    <div class="ending-text">
+                        <strong>이 선택의 의미:</strong> 경제 발전과 환경 보존, 둘 다 포기하지 않는 현실적인 선택. 완벽하진 않지만, 계속 노력하는 인천.
+                    </div>
+                    <button class="restart-btn" onclick="goToScene(1)">🏠 처음으로</button>
+                </div>
+            </div>
+
+            <div class="scene" id="ending-3">
+                <div class="ending-message">
+                    <div class="ending-title">👥 2040년 지속가능한 인천: 시민이 주인인 도시</div>
+                    <div class="ending-text">
+                        여러분의 선택으로 인천은 민주적인 길을 택했어요.
+                    </div>
+                    <div class="decision-box">
+                        <strong>⛴️ 인천항:</strong> 주민 투표로 갯벌 복원 규모를 결정했어요. 어민과 상인이 함께 미래를 만들었어요.
+                        <br><br>
+                        <strong>🏯 강화도:</strong> 지역주민 위원회가 모든 개발 계획을 검토했어요. 때론 느리지만, 모두가 동의한 결정이에요.
+                        <br><br>
+                        <strong>🌆 송도:</strong> 거주자 참여 평가가 활발해요. 누구나 의견을 낼 수 있어요.
+                        <br><br>
+                        <strong>🦆 시화호:</strong> 시민 습지 복원단이 주도적으로 활동하고 있어요.
+                    </div>
+                    <div class="ending-text">
+                        <strong>이 선택의 의미:</strong> 민주주의는 가장 느리지만, 가장 정당하고 지속 가능한 방법. 모두가 참여한 인천의 미래는 더욱 소중해요.
+                    </div>
+                    <button class="restart-btn" onclick="goToScene(1)">🏠 처음으로</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentScene = 1;
+        const totalScenes = 14;
+        let playerDecisions = {};
+
+        function goToScene(sceneNum) {
+            document.querySelectorAll('.scene').forEach(scene => {
+                scene.classList.remove('active');
+            });
+
+            document.getElementById(`scene-${sceneNum}`).classList.add('active');
+            currentScene = sceneNum;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function goToEnding(endingNum) {
+            document.querySelectorAll('.scene').forEach(scene => {
+                scene.classList.remove('active');
+            });
+
+            document.getElementById(`ending-${endingNum}`).classList.add('active');
+            currentScene = 14;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function recordDecision(location, choice) {
+            playerDecisions[location] = choice;
+            console.log('선택 기록:', playerDecisions);
+        }
+
+        function updateProgress() {
+            const progress = (currentScene / totalScenes) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        updateProgress();
+    </script>
+</body>
+</html>
